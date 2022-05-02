@@ -1,0 +1,148 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+struct students
+{
+	int id;
+	int age;
+	char name[100];
+	struct students* next;
+};
+struct students* head=NULL;//头结点指向空 
+struct students* tail=NULL;//尾结点指向空 
+void printstudents(struct students* curP)
+{
+	printf("姓名:%s\n学号:%d\n年龄:%d\n",curP->name,curP->id,curP->age);
+}
+void printList(struct students* head)
+{
+	while (head!=NULL)
+	{
+		printstudents(head);
+		head=head->next;
+	}
+}
+void add()
+{
+	struct students* nodeP=(struct students*)malloc(sizeof(struct students)); //判断malloc申请空间是否成功，消除警告,sizeof大空间 ，(struct students*)malloc自动将空间类型转化为前面的类型 
+	int i = 0;
+	if (nodeP== NULL) 
+	{
+		exit(-1);
+	}
+	printf("请输入学生的姓名:\n");
+	scanf("%s",nodeP->name);
+	printf("请输入学号：\n");
+	scanf("%d",&nodeP->id);
+	printf("请输入年龄：\n");
+	scanf("%d",&nodeP->age);
+	nodeP->next=NULL;
+	if(head==NULL)
+	{
+		head=nodeP;
+		tail=nodeP;
+	}
+	else
+	{
+		tail->next = nodeP;
+		tail = nodeP;
+	}
+	printf("添加成功！！！\n");
+}
+void find()
+{
+	printf("请输入你要查询的学生学号：");
+	int a,flag;
+	scanf("%d",&a);
+	struct students* curP=head;
+	while(curP!=NULL)
+	{
+		if(curP->id==a)
+		{
+			printstudents(curP);
+			flag=1;
+			break;
+		}
+		else
+		{
+			curP=curP->next;
+		}
+	}
+	if(flag==0)
+	{
+		printf("抱歉，没有该学生!\n");
+	} 	 
+}
+void printAdd()
+{
+	if(head==NULL)
+	{
+		printf("抱歉，信息系统里没有该学生!\n");
+	}
+	else
+	{
+		printList(head);
+	} 
+}
+void erase()
+{
+	printf("请输入你想删除的学生的学号:\n");
+	int a;
+	scanf("%d",&a);
+	struct students* curP=head;
+	if(curP->id==a)//找前一个节点
+	{
+		head=head->next;//把head 的节点指向下一个
+		free(curP);//把curP指向的内容释放掉，回收空间 
+		curP=NULL; 
+		return;
+	}
+	struct students* preP=curP;//前一个节点
+	curP=curP->next;
+	while(curP!=NULL)
+	{
+		if(curP->id==a)
+		{
+			struct students* next=curP->next;
+			preP->next=next;
+			free(curP);
+			curP=NULL;
+			printf("已经成功删除学生信息\n");
+			return;
+		}
+		else
+		{
+			preP=curP;
+			curP=curP->next;
+		}
+	}
+	printf("你所说的学生不存在，无法删除!\n");
+}
+ 
+int main()
+{
+	
+	printf("欢迎使用简易学生信息管理系统\n");
+	printf("请选择你要进行的操作\n");
+	printf("输入1添加学生\n");
+	printf("输入2查询学生\n");
+	printf("输入3打印所有学生\n");
+	printf("输入4删除学生\n");
+	printf("输入5退出程序");
+	
+	while(1)
+	{
+		char c=0;
+		c=getchar();
+		switch(c)
+		{
+			case '1':add();break;
+			case '2':find();break;
+			case '3':printAdd();break;
+			case '4':erase();break;
+			case '5':exit(0);break;
+			default:break;
+		}
+	}
+	return 0;
+}
